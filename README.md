@@ -1,6 +1,6 @@
 # Linux Environment and I/O Investigation Assignment
 
-This repository contains my submission for the Graded Lab Assignment (Modules 1–4). 
+This repository contains my submission
 
 ### Repository Structure
 The assignment is divided into 5 modules, each contained within its own directory:
