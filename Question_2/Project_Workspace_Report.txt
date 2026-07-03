@@ -1,0 +1,60 @@
+================================================================================
+                     SECURE PROJECT WORKSPACE SETUP REPORT
+================================================================================
+
+1. Umask value used
+--------------------------------------------------------------------------------
+Command Executed:
+umask
+
+Terminal Output:
+022
+
+Explanation:
+The system's default umask value is displayed as 022. This determines the default permissions given to newly created files and directories by subtracting this value from the maximum base permissions, ensuring files aren't created with fully open access by default.
+
+
+2. Directory structure created
+--------------------------------------------------------------------------------
+Command Executed:
+mkdir secure_workspace
+touch secure_workspace/project_data.txt
+
+Explanation:
+A directory named "secure_workspace" was successfully created to act as the project folder, and an empty file named "project_data.txt" was generated inside it to store the secure project documentation.
+
+
+3. File permissions before modification and Ownership details
+--------------------------------------------------------------------------------
+Command Executed:
+ls -ld secure_workspace
+ls -l secure_workspace/project_data.txt
+
+Terminal Output:
+drwxr-xr-x  3 hardik  staff  96  3 Jul 21:00 secure_workspace
+-rw-r--r--  1 hardik  staff   0  3 Jul 21:00 secure_workspace/project_data.txt
+
+Explanation:
+Before modification, the directory and file had default permissions based on the system umask. The directory was set to drwxr-xr-x (read/execute for others), and the file to -rw-r--r-- (read for others). The ownership details confirm that the user "hardik" is the owner and the primary group is "staff".
+
+
+4. File permissions after modification
+--------------------------------------------------------------------------------
+Command Executed:
+chmod 700 secure_workspace
+chmod 600 secure_workspace/project_data.txt
+ls -ld secure_workspace
+ls -l secure_workspace/project_data.txt
+
+Terminal Output:
+drwx------  3 hardik  staff  96  3 Jul 21:00 secure_workspace
+-rw-------  1 hardik  staff   0  3 Jul 21:00 secure_workspace/project_data.txt
+
+Explanation:
+After applying the chmod commands and verifying with ls -l, the directory permissions were successfully restricted to drwx------ (700), and the file permissions were restricted to -rw------- (600). 
+
+
+5. Explanation of how permissions protect project data
+--------------------------------------------------------------------------------
+Explanation:
+The updated permissions completely secure the workspace. The directory permission 700 ensures that only the owner (hardik) can read, write, and execute (enter) the directory. The file permission 600 ensures that only the owner can read and edit the project data. No other users or groups on the system have any access rights, effectively protecting the project files from unauthorized viewing, execution, or modification.

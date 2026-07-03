@@ -1,0 +1,52 @@
+================================================================================
+                 STORAGE HEALTH ASSESSMENT AND DOCUMENTATION REPORT
+================================================================================
+
+1. Available storage devices and Mounted file systems
+--------------------------------------------------------------------------------
+Command Executed:
+df -h
+
+Terminal Output:
+Filesystem       Size   Used  Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1s1  228Gi   12Gi   41Gi    23%    458k  427M    0%   /
+devfs           201Ki  201Ki    0Bi   100%     696     0  100%   /dev
+/dev/disk3s6    228Gi   20Ki   41Gi     1%       0  427M    0%   /System/Volumes/VM
+/dev/disk3s2    228Gi   10Gi   41Gi    20%    2.1k  427M    0%   /System/Volumes/Preboot
+/dev/disk3s4    228Gi   39Mi   41Gi     1%      65  427M    0%   /System/Volumes/Update
+/dev/disk1s2    500Mi  6.0Mi  481Mi     2%       1  4.9M    0%   /System/Volumes/xarts
+/dev/disk1s1    500Mi  6.0Mi  481Mi     2%      36  4.9M    0%   /System/Volumes/iSCPreboot
+/dev/disk1s3    500Mi  1.9Mi  481Mi     1%     100  4.9M    0%   /System/Volumes/Hardware
+/dev/disk3s5    228Gi  163Gi   41Gi    81%    1.5M  427M    0%   /System/Volumes/Data
+map auto_home     0Bi    0Bi    0Bi   100%       0     0     -   /System/Volumes/Data/home
+
+Explanation:
+The df -h command outputs the storage devices and mounted file systems in a human-readable format. It lists the main disk partitions (such as /dev/disk3s1s1 for the root directory and /dev/disk3s5 for the Data volume), their total size, used space, available capacity, and their specific mount points in the directory tree.
+
+
+2. Disk usage statistics and Inode utilization
+--------------------------------------------------------------------------------
+Command Executed:
+df -i
+
+Terminal Output:
+Filesystem      512-blocks      Used Available Capacity   iused      ifree %iused  Mounted on
+/dev/disk3s1s1   478724992  24522368  85420144    23%    458116  427100720    0%   /
+devfs                  401       401         0   100%       696          0  100%   /dev
+/dev/disk3s6     478724992        40  85420144     1%         0  427100720    0%   /System/Volumes/VM
+/dev/disk3s2     478724992  21038360  85420144    20%      2109  427100720    0%   /System/Volumes/Preboot
+/dev/disk3s4     478724992     79304  85420144     1%        65  427100720    0%   /System/Volumes/Update
+/dev/disk1s2       1024000     12328    985936     2%         1    4929680    0%   /System/Volumes/xarts
+/dev/disk1s1       1024000     12216    985936     2%        36    4929680    0%   /System/Volumes/iSCPreboot
+/dev/disk1s3       1024000      3800    985936     1%       100    4929680    0%   /System/Volumes/Hardware
+/dev/disk3s5     478724992 342320512  85420144    81%   1496308  427100720    0%   /System/Volumes/Data
+map auto_home            0         0         0   100%         0          0     -   /System/Volumes/Data/home
+
+Explanation:
+The df -i command displays the inode utilization for the file systems. Monitoring inodes is critical because even if a system has plenty of free block storage space, it can exhaust its inode allocation if millions of tiny files are created, which would block new file creation entirely.
+
+
+3. Storage health observations and Recommendations
+--------------------------------------------------------------------------------
+Observations & Recommendations:
+Based on the outputs, the primary data partition (/System/Volumes/Data) is currently at 81% storage capacity (163Gi used out of 228Gi) with a very healthy inode utilization (0% of capacity used). While the system is currently healthy, the 81% capacity on the main data volume warrants monitoring. To maintain optimal storage utilization, it is recommended to implement log rotation, periodically clear system caches, and review user directories for large, redundant media or development files.

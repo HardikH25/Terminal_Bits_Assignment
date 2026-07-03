@@ -1,0 +1,47 @@
+================================================================================
+                     FILE SYSTEM AND LINK ANALYSIS REPORT
+================================================================================
+
+1. Inode numbers of all files and Comparison between links
+--------------------------------------------------------------------------------
+Command Executed:
+echo "Important Data" > original.txt
+ln original.txt hardlink.txt
+ln -s original.txt softlink.txt
+ls -li
+
+Terminal Output:
+total 16
+46785028 -rw-r--r--  2 hardik  staff  15  3 Jul 21:04 hardlink.txt
+46785028 -rw-r--r--  2 hardik  staff  15  3 Jul 21:04 original.txt
+46785089 lrwxr-xr-x  1 hardik  staff  12  3 Jul 21:04 softlink.txt -> original.txt
+
+Explanation:
+The ls -li command displays the inode numbers in the first column. The original.txt and hardlink.txt files share the exact same inode number (46785028), proving that a hard link is an additional directory reference pointing to the exact same data block on the disk. The softlink.txt file has a unique inode number (46785089) because a symbolic link is a separate file that merely stores a text path pointing to the original file.
+
+
+2. Effect of deleting the original file
+--------------------------------------------------------------------------------
+Command Executed:
+rm original.txt
+cat hardlink.txt
+cat softlink.txt
+
+Terminal Output:
+Important Data
+cat: softlink.txt: No such file or directory
+
+Explanation:
+Deleting original.txt broke the symbolic link. When trying to read softlink.txt, the system returned a "No such file or directory" error because the target path no longer exists. However, reading hardlink.txt successfully outputted "Important Data", as the underlying data block is preserved until all hard links pointing to it are removed.
+
+
+3. Metadata collected using Linux utilities
+--------------------------------------------------------------------------------
+Explanation:
+The metadata collected from the ls -li utility confirmed file sizes, permissions, link counts, and inodes. Notably, the soft link explicitly showed its pointer metadata (softlink.txt -> original.txt) in the output and had a smaller file size of 12 bytes (the exact length of the string "original.txt").
+
+
+4. Conclusions drawn from the experiment
+--------------------------------------------------------------------------------
+Conclusion:
+Hard links provide a robust way to create multiple access points to the same underlying file data, protecting it from deletion until all hard links are removed. Symbolic links act like standard shortcuts, which are useful for linking across different file systems but are fragile and break immediately if the target is moved or deleted.

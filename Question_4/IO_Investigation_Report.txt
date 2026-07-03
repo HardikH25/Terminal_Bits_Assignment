@@ -1,0 +1,65 @@
+================================================================================
+                     FILE ACCESS AND I/O INVESTIGATION REPORT
+================================================================================
+
+1. Open files identified and File descriptor observations
+--------------------------------------------------------------------------------
+Command Executed:
+lsof | head -n 10
+
+Terminal Output:
+COMMAND   PID   USER   FD      TYPE             DEVICE SIZE/OFF                NODE NAME
+loginwind 394 hardik  cwd       DIR               1,15      704                   2 /
+loginwind 394 hardik  txt       REG               1,15  3227536 1152921500312105742 /System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow
+loginwind 394 hardik  txt       REG               1,15    72788            46761200 /Library/Preferences/Logging/.plist-cache.ddFmBhPK
+loginwind 394 hardik  txt       REG               1,16   422432              336744 /System/Volumes/Preboot/Cryptexes/OS/usr/lib/libLaunchServicesSupport.dylib
+loginwind 394 hardik  txt       REG               1,15  2357376 1152921500312572606 /usr/lib/dyld
+loginwind 394 hardik  txt       REG               1,15      688 1152921500312105771 /System/Library/CoreServices/loginwindow.app/Contents/Resources/InfoPlist.loctable
+loginwind 394 hardik  txt       REG               1,15      110 1152921500312103362 /System/Library/CoreServices/SystemVersion.bundle/en_GB.lproj/SystemVersion.strings
+loginwind 394 hardik  txt       REG               1,15 35444704 1152921500312583097 /usr/share/icu/icudt78l.dat
+loginwind 394 hardik  txt       REG               1,15   137016 1152921500312103051 /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+
+Explanation:
+The lsof utility lists active files currently opened by processes in the system. The headers display details such as COMMAND, PID, USER, and FD (File Descriptor). File descriptors like "cwd" (current working directory) and "txt" (program text) describe how processes (like loginwindow in this output) are interacting with the file system layer.
+
+
+2. Resource limits observed
+--------------------------------------------------------------------------------
+Command Executed:
+ulimit -a
+
+Terminal Output:
+-t: cpu time (seconds)              unlimited
+-f: file size (blocks)              unlimited
+-d: data seg size (kbytes)          unlimited
+-s: stack size (kbytes)             8176
+-c: core file size (blocks)         0
+-v: address space (kbytes)          unlimited
+-l: locked-in-memory size (kbytes)  unlimited
+-u: processes                       2666
+-n: file descriptors                256
+
+Explanation:
+Running ulimit -a reveals standard shell resource limitations. Crucially, the "file descriptors" limit (-n) is set to 256, which indicates the maximum number of simultaneous file descriptors a single process can open in this session, preventing processes from exhausting system resources.
+
+
+3. Output redirection and error redirection results
+--------------------------------------------------------------------------------
+Command Executed:
+echo "Application log entry: Initialization successful" > output.log
+ls /non_existent_folder 2> error.log
+cat output.log
+cat error.log
+
+Terminal Output:
+Application log entry: Initialization successful
+ls: /non_existent_folder: No such file or directory
+
+Explanation:
+Using the '>' operator successfully captured standard output (FD 1) and routed it cleanly into output.log. Using the '2>' operator specifically targeted standard error streams (FD 2), capturing the system error message from the failed ls command and routing it into error.log without interrupting standard console outputs.
+
+
+4. Explanation of how Linux/UNIX manages file I/O
+--------------------------------------------------------------------------------
+Explanation:
+In Linux and UNIX systems, almost everything is handled as a file. When a process requests access to an I/O resource, the operating system assigns an integer known as a File Descriptor (FD). By default, every process starts with three standard streams: Standard Input (FD 0), Standard Output (FD 1), and Standard Error (FD 2). Shell redirection symbols structurally alter these stream pointers, allowing developers to isolate logging data from runtime errors seamlessly.
